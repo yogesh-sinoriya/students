@@ -1,6 +1,6 @@
 var app = require('express')();
 app.get('/',function(req, res){
-	res.sendFile(__dirname+'/index.html');
+	res.sendfile('./index.html');
 });
 app.listen(5000);
 
