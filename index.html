@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" ng-app="Students">
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+
+		<title>Students</title>
+	</head>
+	<body  ng-controller='list'>
+		<div class="container">
+			<div class="header clearfix">
+				<nav>
+					<ul class="nav nav-pills float-right">
+						<li class="nav-item">
+							<a class="nav-link" href="#" id="upload_link">Upload</a>
+							<input id="upload" type="file" style="display:none" on-read-file="showContent($fileContent)" name="">
+						</li>
+					</ul>
+				</nav>
+				<h3 class="text-muted">Assignment</h3>
+			</div>
+
+			<div class="jumbotron">
+				<h5 class="display-4">Students</h5>
+				<table class="table">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col" ng-if="data[0]">#</th>
+							<th scope="col" ng-repeat="c in content[0]">{{c}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="d in data | orderBy:'-score'|limitTo:10">
+							<th scope="col">{{$index+1}}</th>
+							<th scope="row">{{d.name}}</th>
+							<td>{{d.class}}</td>
+							<td>{{d.section}}</td>
+							<td>{{d.score}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div> <!-- /container -->
+
+		<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+
+		<script>
+			var app = angular.module('Students',[]).controller('list',function($scope){
+				$scope.data = [];
+				$scope.showContent = function(fileContent){
+					$scope.content = fileContent.split('\n');
+					for(i in $scope.content){
+						var temp = {};
+						$scope.content[i] = $scope.content[i].split(',');
+						for(j in $scope.content[i]){
+							if(i == 0 || $scope.content[0][j] == "" && $scope.content[i][j] == ""){ break;}
+							temp[$scope.content[0][j]] = $scope.content[i][j];              
+						}
+						if(i != 0){ $scope.data.push(temp);}
+						
+					}
+					 console.log($scope.data);
+				};
+			}).directive('onReadFile', function ($parse) {
+				return {
+					restrict: 'A',
+					scope: false,
+					link: function(scope, element, attrs) {
+						var fn = $parse(attrs.onReadFile);
+			 
+						element.on('change', function(onChangeEvent) {
+							var reader = new FileReader();
+			 
+							reader.onload = function(onLoadEvent) {
+								scope.$apply(function() {
+									fn(scope, {$fileContent:onLoadEvent.target.result});
+								});
+							};
+			 
+							reader.readAsText((onChangeEvent.srcElement || onChangeEvent.target).files[0]);
+						});
+					}
+				};
+			});
+
+			$("#upload_link").on('click', function(e){
+					e.preventDefault();
+					$("#upload").trigger('click');
+			});
+		</script>
+	</body>
+</html>
