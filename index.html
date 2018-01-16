@@ -10,7 +10,7 @@
 
 		<title>Students</title>
 	</head>
-	<body  ng-controller='list'>
+	<body  ng-controller='list' ng-cloak>
 		<div class="container">
 			<div class="header clearfix">
 				<nav>
@@ -25,7 +25,15 @@
 			</div>
 
 			<div class="jumbotron">
-				<h5 class="display-4">{{data[0]?'Students':'Please upload student data'}}</h5>
+				<h5 class="display-6">{{data[0]?'Students':'Please upload student data'}}</h5>
+				<div ng-show="data[0]?false:true">
+					<h6>student.txt</h6>
+<pre>
+	name,class,section,score
+	ram,2,A,56
+	ashok,2,B,65
+</pre>
+				</div>
 				<table class="table">
 					<thead class="thead-dark">
 						<tr>
